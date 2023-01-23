@@ -10,7 +10,7 @@
 <section layout:fragment="content">
     <div class="container" style="background:white; opacity: 0.7; overflow-y: auto; position:relative">
         <h1>Edit note</h1>
-        <form th:action="@{/notes}" th:object="${note}" method="POST">
+        <form th:action="@{/notes}" th:object="${note}" th:method="PUT">
             <div class="form-group">
                 <label> Title: </label>
                 <input type="text" th:field="*{name}" name="name" class="form-control">
@@ -41,8 +41,7 @@
             </div>
             <div>
                 <input name="id" type="hidden" th:field="*{id}">
-                <button class="btn btn-primary update_data" type="submit" name="update_data"
-                        th:attr="resource=|/notes/${note.id}|"
+                <button class="btn btn-primary" type="submit"
                         style="position:absolute; bottom:12px;right:150px">
                     Save changes
                 </button>
@@ -55,55 +54,5 @@
     </div>
 
 </section>
-<th:block layout:fragment="script">
-    <script>
-        var putMethod = (event) => {
-            event.preventDefault();
-            putData();
-        }
-
-        function putData() {
-            let url = "/notes/" + document.getElementById("id").value;
-            let urlRedirect = "/notes";
-            let data = {};
-            data[document.getElementById("id").name] = document.getElementById("id").value;
-            data[document.getElementById("name").name] = document.getElementById("name").value;
-            data[document.getElementById("category").name] = document.getElementById("category").value;
-            data[document.getElementById("content").name] = document.getElementById("content").value;
-            const radioButtons = document.querySelectorAll("[type=radio]");
-            radioButtons.forEach(e => {
-                if (e.checked) {
-                    data[e.name] = e.value;
-                }
-            })
-            const response = fetch(url, {
-                method: 'PUT',
-                mode: 'cors',
-                cache: 'no-cache',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                redirect: 'manual',
-                referrerPolicy: 'strict-origin',
-                body: JSON.stringify(data)
-            }).then((response) => {
-                if (!response.ok) {
-                    if(!alert("Wrong format! Update canceled!")){
-                        window.location.href = urlRedirect;
-                    }
-                } else {
-                    window.location.href = urlRedirect;
-                }
-            }).catch(function (err) {
-                console.info(err + " url: " + url);
-            });
-        }
-
-        document.querySelectorAll("[name=update_data]").forEach(element => {
-            element.addEventListener("click", putMethod);
-        })
-    </script>
-</th:block>
 </body>
 </html>

@@ -78,6 +78,7 @@ public class NoteController {
         if (!authorizedUserId.equals(ownerId)){
             return "error/forbidden";
         }
+        note.setId(id);
         note.setUser(userService.getAuthorizedUser());
         noteService.save(note);
         throw new ResponseStatusException(HttpStatus.OK, "Note Updated");
